@@ -1,0 +1,212 @@
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Activity, AlertOctagon, Camera, CheckCircle2 } from 'lucide-react';
+import { api, resolveViolation } from '../services/api';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
+import toast from 'react-hot-toast';
+import { Pagination } from '../components/Pagination';
+
+interface Violation {
+  id: number;
+  type: string;
+  severity: string;
+  cameraId: string;
+  status: string;
+  timestamp: string;
+}
+
+const PAGE_SIZE = 10;
+
+export default function Dashboard() {
+  const [violations, setViolations] = useState<Violation[]>([]);
+  const [page, setPage] = useState(1);
+
+  const handleResolve = async (id: number) => {
+    try {
+      await resolveViolation(id);
+      // Update state instantly without a full reload
+      setViolations(prev => prev.map(v => v.id === id ? { ...v, status: 'RESOLVED' } : v));
+      toast.success('Alerta marcada como resuelta');
+    } catch {
+      toast.error('No se pudo resolver la alerta');
+    }
+  };
+
+  useEffect(() => {
+    // 1. Fetch initial state
+    const fetchViolations = async () => {
+      try {
+        const res = await api.get('/monitor/violations');
+        setViolations(res.data);
+      } catch (error) {
+        setViolations([]);
+      }
+    };
+    fetchViolations();
+
+    // 2. Setup WebSocket Connection
+    const socket = new SockJS('/ws/alerts'); // Handled by Nginx proxy
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      onConnect: () => {
+        console.log('Connected to WebSocket!');
+        stompClient.subscribe('/topic/alerts', (message) => {
+          const newViolation: Violation = JSON.parse(message.body);
+          
+          // Prepend new violation
+          setViolations((prev) => [newViolation, ...prev].slice(0, 50)); // Keep last 50
+          
+          // Show Toast notification
+          toast.custom((t) => (
+            <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-zinc-900 border border-zinc-800 shadow-2xl rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
+              <div className="flex-1 w-0 p-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 pt-0.5">
+                    <AlertOctagon className={`h-10 w-10 ${newViolation.severity === 'HIGH' ? 'text-red-500' : 'text-amber-500'}`} />
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <p className="text-sm font-medium text-white">
+                      Nueva Infracción Detectada
+                    </p>
+                    <p className="mt-1 text-sm text-zinc-400">
+                      {newViolation.type.replace(/_/g, ' ')} en {newViolation.cameraId.replace(/_/g, ' ')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ));
+        });
+      },
+      onStompError: (frame) => {
+        console.error('Broker reported error: ' + frame.headers['message']);
+        console.error('Additional details: ' + frame.body);
+      },
+    });
+
+    stompClient.activate();
+
+    return () => {
+      stompClient.deactivate();
+    };
+  }, []);
+
+  const stats = [
+    { label: 'Cámaras Activas', value: '12/12', icon: Camera, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+    { label: 'Alertas Hoy', value: violations.length.toString(), icon: Activity, color: 'text-blue-400', bg: 'bg-blue-400/10' },
+    { label: 'Infracciones Pendientes', value: violations.filter(v => v.status === 'PENDING').length.toString(), icon: AlertOctagon, color: 'text-rose-400', bg: 'bg-rose-400/10' },
+    { label: 'Resueltas', value: '28', icon: CheckCircle2, color: 'text-zinc-400', bg: 'bg-zinc-400/10' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-white mb-1">Centro de Monitoreo</h1>
+        <p className="text-zinc-400">Visión general del estado de seguridad del condominio en tiempo real.</p>
+      </div>
+
+      {/* KPIs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat, idx) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            className="glass p-6 rounded-2xl flex items-start justify-between"
+          >
+            <div>
+              <p className="text-sm font-medium text-zinc-400 mb-1">{stat.label}</p>
+              <h3 className="text-3xl font-bold text-white">{stat.value}</h3>
+            </div>
+            <div className={`p-3 rounded-xl ${stat.bg}`}>
+              <stat.icon className={`w-5 h-5 ${stat.color}`} />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Recent Violations Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="glass rounded-2xl overflow-hidden"
+      >
+        <div className="p-6 border-b border-zinc-800/50">
+          <h2 className="text-lg font-semibold text-white">Infracciones Recientes</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-zinc-900/50 text-zinc-400 uppercase text-xs">
+              <tr>
+                <th className="px-6 py-4 font-medium">Tipo</th>
+                <th className="px-6 py-4 font-medium">Cámara / Sensor</th>
+                <th className="px-6 py-4 font-medium">Severidad</th>
+                <th className="px-6 py-4 font-medium">Estado</th>
+                <th className="px-6 py-4 font-medium text-right">Tiempo</th>
+                <th className="px-6 py-4 font-medium text-right">Acción</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800/50">
+              <AnimatePresence>
+                {violations
+                  .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+                  .map((v) => (
+                  <motion.tr 
+                    key={v.id}
+                    initial={{ opacity: 0, backgroundColor: 'rgba(59, 130, 246, 0.2)' }}
+                    animate={{ opacity: 1, backgroundColor: 'transparent' }}
+                    transition={{ duration: 1 }}
+                    className="hover:bg-zinc-800/20 transition-colors"
+                  >
+                    <td className="px-6 py-4 font-medium text-zinc-200">{v.type?.replace(/_/g, ' ') ?? 'Sin tipo'}</td>
+                    <td className="px-6 py-4 text-zinc-400">{v.cameraId?.replace(/_/g, ' ') ?? 'Manual'}</td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${
+                        v.severity === 'HIGH' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 
+                        v.severity === 'CRITICAL' ? 'bg-red-600/20 text-red-500 border-red-600/30' :
+                        'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                      }`}>
+                        {v.severity}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${
+                        v.status === 'PENDING' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 
+                        'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                      }`}>
+                        {v.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right text-zinc-500">
+                      {new Date(v.timestamp).toLocaleTimeString()}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      {v.status === 'PENDING' && (
+                        <button
+                          onClick={() => handleResolve(v.id)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Resolver
+                        </button>
+                      )}
+                    </td>
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
+            </tbody>
+          </table>
+        </div>
+        <Pagination
+          currentPage={page}
+          totalItems={violations.length}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+        />
+      </motion.div>
+    </div>
+  );
+}

@@ -1,0 +1,9 @@
+{
+  "name": "iot-simulator",
+  "version": "1.0.0",
+  "description": "IoT Simulator for Smart Condo",
+  "main": "simulator.js",
+  "dependencies": {
+    "mqtt": "^5.0.5"
+  }
+}
