@@ -76,7 +76,7 @@ Si alguien se mete donde no debe, el sistema hace sonar una alarma y prende luce
 Lo genial de esto es que en vez de tener cámaras aburridas que solo graban, ahora tenemos un sistema que se da cuenta de las cosas en tiempo real y reacciona al instante, ayudando un montón a los conserjes.
 
 \section{Definición de Perfiles del Sistema}
-Para garantizar la escalabilidad, la privacidad de los datos y el principio de mínimo privilegio, el sistema segmenta las funcionalidades en cuatro roles bien definidos, cada uno con interfaces y alcances específicos dentro de la plataforma web.
+El sistema cuenta con cuatro perfiles de acceso. Los dos perfiles obligatorios son el \textbf{perfil de Usuario} (implementado como ``RESIDENTE'', que representa al habitante del condominio) y el \textbf{perfil de Administrador} (``ADMIN''). Adicionalmente, se han incorporado los perfiles de Recepción y Seguridad para cubrir las necesidades operativas reales del condominio.
 
 \subsection{Perfil de Administrador (ADMIN)}
 Es el usuario con los mayores privilegios del sistema, encargado de la operatividad general, la configuración técnica y la gestión de todo el personal.
@@ -103,8 +103,8 @@ Enfocado estrictamente en los guardias de turno y personal de vigilancia móvil.
     \item \textbf{Sin acceso administrativo:} No pueden crear usuarios ni asignar multas económicas, su función es 100\% táctica.
 \end{itemize}
 
-\subsection{Perfil de Usuario (RESIDENTE)}
-Diseñado para los habitantes del condominio, enfocado en brindar transparencia, comunicación y tranquilidad.
+\subsection{Perfil de Usuario / Residente (RESIDENTE)}
+Perfil de \textbf{Usuario} final del sistema, diseñado para los habitantes del condominio. Su enfoque es brindar transparencia, comunicación y tranquilidad.
 \begin{itemize}
     \item \textbf{Mis Infracciones y Notificaciones:} Acceso a un registro personal de las alertas o multas asociadas a su cuenta o vivienda. Si poseen una multa, el sistema les indicará que deben dirigirse a recepción.
     \item \textbf{Gestión de Cuenta:} Visualización de sus datos y actualización de contraseñas.
