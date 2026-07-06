@@ -6,6 +6,27 @@ import { AlertTriangle, Plus, ShieldAlert } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Pagination } from '../components/Pagination';
 
+const SEVERITY_MAP: Record<string, string> = {
+  CRITICAL: 'Crítica',
+  HIGH: 'Alta',
+  MEDIUM: 'Media',
+  LOW: 'Baja'
+};
+
+const STATUS_MAP: Record<string, string> = {
+  PENDING: 'Pendiente',
+  RESOLVED: 'Resuelta',
+  FALSE_POSITIVE: 'Falso Positivo',
+  FINED: 'Multada'
+};
+
+const TYPE_MAP: Record<string, string> = {
+  NOISE_COMPLAINT: 'Ruido Molesto',
+  PET_RESTRICTED_AREA: 'Mascota en Área Restringida',
+  UNAUTHORIZED_PARKING: 'Estacionamiento Indebido',
+  LATE_PAYMENT: 'Retraso en Pago'
+};
+
 const PAGE_SIZE = 9;
 
 export const Infractions = () => {
@@ -151,13 +172,13 @@ export const Infractions = () => {
                   v.severity === 'HIGH' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
                   'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                 }`}>
-                  {v.severity}
+                  {SEVERITY_MAP[v.severity] || v.severity}
                 </span>
                 <span className="text-xs text-zinc-500">
                   {new Date(v.timestamp).toLocaleString()}
                 </span>
               </div>
-              <h3 className="text-zinc-200 font-medium mb-1">{v.type.replace(/_/g, ' ')}</h3>
+              <h3 className="text-zinc-200 font-medium mb-1">{TYPE_MAP[v.type] || v.type.replace(/_/g, ' ')}</h3>
               <p className="text-zinc-400 text-sm mb-4 line-clamp-2">{v.description || 'Sin descripción'}</p>
               
               <div className="flex items-center justify-between pt-4 border-t border-zinc-800/50 mb-4">
@@ -165,12 +186,11 @@ export const Infractions = () => {
                   Residente: <span className="text-zinc-300 font-medium">{v.residentUsername || 'Desconocido'}</span>
                 </div>
                 <div className="text-xs text-zinc-500">
-                  Estado: <span className="text-zinc-300">{v.status}</span>
+                  Estado: <span className="text-zinc-300">{STATUS_MAP[v.status] || v.status}</span>
                 </div>
               </div>
 
-              {(role === 'ADMIN' || role === 'RECEPCION') && v.status === 'PENDING' && (
-                <div className="flex flex-wrap gap-2 pt-2">
+              {(role === 'ADMIN' || role === 'RECEPCION') && (v.status === 'PENDING' || v.status === 'FINED') && (                <div className="flex flex-wrap gap-2 pt-2">
                   <button 
                     onClick={() => handleResolve(v.id)}
                     className="flex-1 px-2 py-1.5 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 rounded text-xs font-medium transition-colors"

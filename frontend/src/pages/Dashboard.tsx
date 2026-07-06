@@ -8,6 +8,27 @@ import { Client } from '@stomp/stompjs';
 import toast from 'react-hot-toast';
 import { Pagination } from '../components/Pagination';
 
+const SEVERITY_MAP: Record<string, string> = {
+  CRITICAL: 'Crítica',
+  HIGH: 'Alta',
+  MEDIUM: 'Media',
+  LOW: 'Baja'
+};
+
+const STATUS_MAP: Record<string, string> = {
+  PENDING: 'Pendiente',
+  RESOLVED: 'Resuelta',
+  FALSE_POSITIVE: 'Falso Positivo',
+  FINED: 'Multada'
+};
+
+const TYPE_MAP: Record<string, string> = {
+  NOISE_COMPLAINT: 'Ruido Molesto',
+  PET_RESTRICTED_AREA: 'Mascota en Área Restringida',
+  UNAUTHORIZED_PARKING: 'Estacionamiento Indebido',
+  LATE_PAYMENT: 'Retraso en Pago'
+};
+
 interface Violation {
   id: number;
   type: string;
@@ -101,7 +122,7 @@ export default function Dashboard() {
                       Nueva Infracción Detectada
                     </p>
                     <p className="mt-1 text-sm text-zinc-400">
-                      {newViolation.type.replace(/_/g, ' ')} en {newViolation.cameraId.replace(/_/g, ' ')}
+                      {TYPE_MAP[newViolation.type] || newViolation.type.replace(/_/g, ' ')} en {newViolation.cameraId.replace(/_/g, ' ')}
                     </p>
                   </div>
                 </div>
@@ -192,7 +213,7 @@ export default function Dashboard() {
                     transition={{ duration: 1 }}
                     className="hover:bg-zinc-800/20 transition-colors"
                   >
-                    <td className="px-6 py-4 font-medium text-zinc-200">{v.type?.replace(/_/g, ' ') ?? 'Sin tipo'}</td>
+                    <td className="px-6 py-4 font-medium text-zinc-200">{TYPE_MAP[v.type] || (v.type?.replace(/_/g, ' ') ?? 'Sin tipo')}</td>
                     <td className="px-6 py-4 text-zinc-400">{v.cameraId?.replace(/_/g, ' ') ?? 'Manual'}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${
@@ -200,22 +221,23 @@ export default function Dashboard() {
                         v.severity === 'CRITICAL' ? 'bg-red-600/20 text-red-500 border-red-600/30' :
                         'bg-amber-500/10 text-amber-400 border-amber-500/20'
                       }`}>
-                        {v.severity}
+                        {SEVERITY_MAP[v.severity] || v.severity}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${
                         v.status === 'PENDING' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 
+                        v.status === 'FINED' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 
                         'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                       }`}>
-                        {v.status}
+                        {STATUS_MAP[v.status] || v.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right text-zinc-500">
                       {new Date(v.timestamp).toLocaleTimeString()}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      {(role === 'ADMIN' || role === 'RECEPCION' || role === 'SEGURIDAD') && v.status === 'PENDING' && (
+                      {(role === 'ADMIN' || role === 'RECEPCION' || role === 'SEGURIDAD') && (v.status === 'PENDING' || v.status === 'FINED') && (
                         <div className="flex justify-end gap-2">
                           <button
                             onClick={() => handleResolve(v.id)}
