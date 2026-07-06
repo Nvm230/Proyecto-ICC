@@ -130,7 +130,6 @@ El componente físico (IoT) es la primera línea de defensa perimetral. Se ha di
     \item \textbf{Microcontrolador ESP32:} Es el cerebro de los sensores. Lo mejor es que cuesta solo unos 30 soles, así que es súper barato poner varios por todo el condominio. Se conecta al Wi-Fi y manda datos súper rápido usando MQTT.
     \item \textbf{Sensor Ultrasónico (HC-SR04):} Instalado en las barreras vehiculares o pasillos estrechos, emite pulsos ultrasónicos para calcular la distancia de los objetos. Permite detectar intentos de cruce bajo barreras cerradas o medir si un vehículo está bloqueando un acceso.
     \item \textbf{Sensor Infrarrojo Pasivo (PIR):} Detecta radiación térmica humana en movimiento. Ideal para zonas de acceso restringido absoluto (cuartos de bombas, azoteas, transformadores eléctricos) donde cualquier presencia es inmediatamente una infracción.
-    \item \textbf{Sensor Magnético (Reed Switch):} Instalado en puertas de emergencia. Envía una alerta si la puerta es abierta de forma indebida.
     \item \textbf{Actuadores (Buzzer y LEDs):} Al recibir un comando de alerta desde el servidor remoto a través de MQTT, el ESP32 activa una frecuencia sonora disuasoria (buzzer) y luces estroboscópicas LED, alertando a los guardias locales y espantando al intruso antes de que consume un delito.
 \end{itemize}
 

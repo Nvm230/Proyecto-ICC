@@ -14,9 +14,9 @@
 \contentsline {section}{\numberline {6}Uso de Inteligencia Artificial (Visión Computacional)}{6}{section.6}%
 \contentsline {subsection}{\numberline {6.1}Funcionamiento de la IA}{6}{subsection.6.1}%
 \contentsline {section}{\numberline {7}Arquitectura Inicial de la Solución}{7}{section.7}%
-\contentsline {section}{\numberline {8}Tecnologías Propuestas}{8}{section.8}%
+\contentsline {section}{\numberline {8}Tecnologías Propuestas}{7}{section.8}%
 \contentsline {section}{\numberline {9}Viabilidad del Proyecto y Alcance}{8}{section.9}%
 \contentsline {subsection}{\numberline {9.1}Alcance del Proyecto (MVP)}{8}{subsection.9.1}%
-\contentsline {subsection}{\numberline {9.2}Viabilidad Técnica}{9}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.2}Viabilidad Técnica}{8}{subsection.9.2}%
 \contentsline {section}{\numberline {10}Impacto Esperado}{9}{section.10}%
-\contentsline {section}{\numberline {11}Conclusiones}{10}{section.11}%
+\contentsline {section}{\numberline {11}Conclusiones}{9}{section.11}%
