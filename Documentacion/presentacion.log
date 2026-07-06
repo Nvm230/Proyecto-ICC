@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.7.4)  6 JUL 2026 13:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.7.4)  6 JUL 2026 13:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1120,10 +1120,10 @@ Package rerunfilecheck Info: File `presentacion.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 28339 strings out of 469453
- 576940 string characters out of 5469038
- 992932 words of memory out of 5000000
- 56429 multiletter control sequences out of 15000+600000
+ 28330 strings out of 469453
+ 576756 string characters out of 5469038
+ 992930 words of memory out of 5000000
+ 56420 multiletter control sequences out of 15000+600000
  636346 words of font info for 71 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
  102i,13n,123p,1879b,872s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1132,7 +1132,7 @@ texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmssbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm
 /cmtt10.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfss1095.pfb>
-Output written on presentacion.pdf (9 pages, 81667 bytes).
+Output written on presentacion.pdf (9 pages, 81459 bytes).
 PDF statistics:
  103 PDF objects out of 1000 (max. 8388607)
  73 compressed objects within 1 object stream

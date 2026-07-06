@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.7.4)  6 JUL 2026 13:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.7.4)  6 JUL 2026 13:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -781,9 +781,9 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.53 \newpage
+l.52 \newpage
               [1] [2] [3] [4] [5] [6]
-Overfull \hbox (71.29079pt too wide) in paragraph at lines 202--203
+Overfull \hbox (71.29079pt too wide) in paragraph at lines 201--202
  [] 
  []
 
@@ -800,10 +800,10 @@ Package rerunfilecheck Info: File `proyecto.out' has not changed.
 (rerunfilecheck)             Checksum: BBE65E17EB9E1D6F89A703DFC9EC4920;4562.
  ) 
 Here is how much of TeX's memory you used:
- 24518 strings out of 469453
- 478185 string characters out of 5469038
- 915280 words of memory out of 5000000
- 52750 multiletter control sequences out of 15000+600000
+ 24515 strings out of 469453
+ 478136 string characters out of 5469038
+ 914280 words of memory out of 5000000
+ 52747 multiletter control sequences out of 15000+600000
  633734 words of font info for 60 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
  102i,7n,107p,507b,902s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -814,7 +814,7 @@ amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
 8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/sh
 are/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf-dist
 /fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on proyecto.pdf (11 pages, 146544 bytes).
+Output written on proyecto.pdf (11 pages, 146483 bytes).
 PDF statistics:
  231 PDF objects out of 1000 (max. 8388607)
  200 compressed objects within 2 object streams
