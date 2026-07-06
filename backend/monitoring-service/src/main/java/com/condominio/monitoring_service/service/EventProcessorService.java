@@ -21,6 +21,7 @@ public class EventProcessorService {
     private final ViolationRepository violationRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final ObjectMapper objectMapper;
+    private final com.condominio.monitoring_service.config.MqttGateway mqttGateway;
 
     @ServiceActivator(inputChannel = "mqttInputChannel")
     public void processMqttMessage(Message<String> message) {
@@ -31,34 +32,31 @@ public class EventProcessorService {
         try {
             JsonNode rootNode = objectMapper.readTree(payload);
             
-            // Only save if it's a simulated vision event for now
-            if (topic.equals("condominio/vision/events")) {
-                Violation violation = Violation.builder()
-                        .type(rootNode.get("type").asText())
-                        .severity(rootNode.get("severity").asText())
-                        .cameraId(rootNode.get("camera_id").asText())
-                        .status("PENDING")
-                        .timestamp(LocalDateTime.now())
-                        .build();
-
-                violation = violationRepository.save(violation);
-                log.info("Saved new violation to DB: {}", violation.getId());
-
-                // Broadcast via WebSocket
-                messagingTemplate.convertAndSend("/topic/alerts", violation);
-            } else if (topic.equals("condominio/sensors/events")) {
-                // We can also create violations or just alerts for sensors
+            if (topic.equals("condominio/sensors/events")) {
                 if ("TRIGGERED".equals(rootNode.get("status").asText())) {
                     Violation violation = Violation.builder()
                             .type("SENSOR_TRIGGERED")
                             .severity("HIGH")
-                            .cameraId(rootNode.get("sensor_id").asText()) // Using sensor_id in cameraId for simplicity
+                            .cameraId(rootNode.get("sensor_id").asText())
                             .status("PENDING")
                             .timestamp(LocalDateTime.now())
+                            .residentUsername("residente1")
                             .build();
 
                     violation = violationRepository.save(violation);
                     messagingTemplate.convertAndSend("/topic/alerts", violation);
+                    
+                    log.info("Activando alarma remota en el ESP32 por 1 segundo");
+                    mqttGateway.sendToMqtt("ON", "condominio/sensors/alarm");
+                    
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(1000);
+                            mqttGateway.sendToMqtt("OFF", "condominio/sensors/alarm");
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }).start();
                 }
             }
 

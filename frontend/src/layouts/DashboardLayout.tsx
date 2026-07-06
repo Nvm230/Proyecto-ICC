@@ -1,7 +1,7 @@
 import { Outlet, Navigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { motion } from 'framer-motion';
-import { Activity, AlertTriangle, Users, LogOut, Settings } from 'lucide-react';
+import { Activity, AlertTriangle, Users, LogOut, Settings, Camera } from 'lucide-react';
 
 export default function DashboardLayout() {
   const { token, role, logout } = useAuthStore();
@@ -12,6 +12,7 @@ export default function DashboardLayout() {
 
   const menuItems = [
     ...(role !== 'RESIDENTE' ? [{ icon: Activity, label: 'Alertas en Vivo', path: '/dashboard' }] : []),
+    ...(role !== 'RESIDENTE' ? [{ icon: Camera, label: 'Cámaras (IA)', path: '/dashboard/cameras' }] : []),
     { icon: AlertTriangle, label: 'Infracciones', path: '/dashboard/infractions' },
     ...(role !== 'RESIDENTE' ? [{ icon: Users, label: 'Usuarios', path: '/dashboard/users' }] : []),
     { icon: Settings, label: 'Configuración', path: '/dashboard/settings' },

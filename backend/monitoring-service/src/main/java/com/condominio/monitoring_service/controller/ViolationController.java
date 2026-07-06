@@ -50,4 +50,28 @@ public class ViolationController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PatchMapping("/violations/{id}/false-positive")
+    public ResponseEntity<Violation> falsePositiveViolation(@PathVariable Long id) {
+        return violationRepository.findById(id)
+                .map(v -> {
+                    v.setStatus("FALSE_POSITIVE");
+                    return ResponseEntity.ok(violationRepository.save(v));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/violations/{id}/fine")
+    public ResponseEntity<Violation> fineViolation(@PathVariable Long id, @RequestBody Violation requestBody) {
+        return violationRepository.findById(id)
+                .map(v -> {
+                    v.setResidentUsername(requestBody.getResidentUsername());
+                    if (requestBody.getDescription() != null && !requestBody.getDescription().isEmpty()) {
+                        v.setDescription(requestBody.getDescription());
+                    }
+                    v.setStatus("FINED");
+                    return ResponseEntity.ok(violationRepository.save(v));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

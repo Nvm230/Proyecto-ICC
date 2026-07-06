@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, AlertOctagon, Camera, CheckCircle2 } from 'lucide-react';
 import { api, resolveViolation } from '../services/api';
+import { useAuthStore } from '../store/useAuthStore';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import toast from 'react-hot-toast';
@@ -19,6 +20,7 @@ interface Violation {
 const PAGE_SIZE = 10;
 
 export default function Dashboard() {
+  const { role } = useAuthStore();
   const [violations, setViolations] = useState<Violation[]>([]);
   const [page, setPage] = useState(1);
 
@@ -31,6 +33,35 @@ export default function Dashboard() {
     } catch {
       toast.error('No se pudo resolver la alerta');
     }
+  };
+
+  const [showFineModal, setShowFineModal] = useState(false);
+  const [selectedViolationId, setSelectedViolationId] = useState<number | null>(null);
+  const [fineResident, setFineResident] = useState('');
+  const [fineDescription, setFineDescription] = useState('');
+
+  const handleFalsePositive = async (id: number) => {
+    try {
+      await api.patch(`/monitor/violations/${id}/false-positive`);
+      setViolations(prev => prev.map(v => v.id === id ? { ...v, status: 'FALSE_POSITIVE' } : v));
+      toast.success('Marcado como falso positivo');
+    } catch (e) { toast.error('Error al actualizar'); }
+  };
+
+  const handleFineSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedViolationId) return;
+    try {
+      await api.patch(`/monitor/violations/${selectedViolationId}/fine`, {
+        residentUsername: fineResident,
+        description: fineDescription
+      });
+      setViolations(prev => prev.map(v => v.id === selectedViolationId ? { ...v, status: 'FINED' } : v));
+      toast.success('Multa asignada exitosamente');
+      setShowFineModal(false);
+      setFineResident('');
+      setFineDescription('');
+    } catch (e) { toast.error('Error al asignar multa'); }
   };
 
   useEffect(() => {
@@ -184,14 +215,31 @@ export default function Dashboard() {
                       {new Date(v.timestamp).toLocaleTimeString()}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      {v.status === 'PENDING' && (
-                        <button
-                          onClick={() => handleResolve(v.id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
-                        >
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          Resolver
-                        </button>
+                      {(role === 'ADMIN' || role === 'RECEPCION' || role === 'SEGURIDAD') && v.status === 'PENDING' && (
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => handleResolve(v.id)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            Resolver
+                          </button>
+                          <button 
+                            onClick={() => handleFalsePositive(v.id)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-xs font-medium transition-colors"
+                          >
+                            Falso Positivo
+                          </button>
+                          <button 
+                            onClick={() => {
+                              setSelectedViolationId(v.id);
+                              setShowFineModal(true);
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
+                          >
+                            Multar
+                          </button>
+                        </div>
                       )}
                     </td>
                   </motion.tr>
@@ -207,6 +255,56 @@ export default function Dashboard() {
           onPageChange={setPage}
         />
       </motion.div>
+
+      {/* Modal de Multas (desde Dashboard) */}
+      {showFineModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-sm overflow-hidden">
+            <div className="p-6 border-b border-zinc-800">
+              <h2 className="text-xl font-bold text-zinc-100">Asignar Multa</h2>
+            </div>
+            <form onSubmit={handleFineSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-1">Usuario del Residente a Multar</label>
+                <input 
+                  required
+                  type="text" 
+                  value={fineResident}
+                  onChange={(e) => setFineResident(e.target.value)}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:border-red-500/50"
+                  placeholder="Ej. residente1"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-1">Descripción de la Multa</label>
+                <textarea 
+                  required
+                  rows={3}
+                  value={fineDescription}
+                  onChange={(e) => setFineDescription(e.target.value)}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:border-red-500/50 resize-none"
+                  placeholder="Motivo de la multa..."
+                />
+              </div>
+              <div className="pt-4 flex justify-end space-x-3">
+                <button 
+                  type="button"
+                  onClick={() => setShowFineModal(false)}
+                  className="px-4 py-2 text-zinc-400 hover:text-zinc-200 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit"
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium"
+                >
+                  Confirmar Multa
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

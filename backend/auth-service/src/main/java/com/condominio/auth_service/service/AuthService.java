@@ -3,6 +3,8 @@ package com.condominio.auth_service.service;
 import com.condominio.auth_service.dto.AuthRequest;
 import com.condominio.auth_service.dto.AuthResponse;
 import com.condominio.auth_service.dto.RegisterRequest;
+import com.condominio.auth_service.dto.ChangePasswordRequest;
+import com.condominio.auth_service.dto.ChangeRoleRequest;
 import com.condominio.auth_service.model.Role;
 import com.condominio.auth_service.model.User;
 import com.condominio.auth_service.repository.UserRepository;
@@ -66,5 +68,23 @@ public class AuthService {
                         .role(user.getRole().name())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public void changePassword(String username, String newPassword) {
+        var user = repository.findByUsername(username).orElseThrow();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        repository.save(user);
+    }
+
+    public void adminChangePassword(Long userId, String newPassword) {
+        var user = repository.findById(userId).orElseThrow();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        repository.save(user);
+    }
+
+    public void adminChangeRole(Long userId, String newRole) {
+        var user = repository.findById(userId).orElseThrow();
+        user.setRole(Role.valueOf(newRole));
+        repository.save(user);
     }
 }

@@ -23,12 +23,14 @@ export const Infractions = () => {
     description: ''
   });
 
+  const [showFineModal, setShowFineModal] = useState(false);
+  const [selectedViolationId, setSelectedViolationId] = useState<number | null>(null);
+  const [fineResident, setFineResident] = useState('');
+  const [fineDescription, setFineDescription] = useState('');
+
   const fetchViolations = async () => {
     try {
       setLoading(true);
-      // In a real app, ADMIN/SEGURIDAD would fetch ALL violations. 
-      // For now, if resident, fetch their own. Otherwise, we fetch all from monitor service
-      // We will assume `getUserViolations` with empty string fetches all or we just use GET /api/monitor/violations
       const res = await (role === 'RESIDENTE' 
         ? getUserViolations(username || '')
         : fetch('/api/monitor/violations', {
@@ -60,6 +62,48 @@ export const Infractions = () => {
     }
   };
 
+  const handleResolve = async (id: number) => {
+    try {
+      await fetch(`/api/monitor/violations/${id}/resolve`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${useAuthStore.getState().token}` }
+      });
+      toast.success('Infracción resuelta');
+      fetchViolations();
+    } catch (e) { toast.error('Error al resolver'); }
+  };
+
+  const handleFalsePositive = async (id: number) => {
+    try {
+      await fetch(`/api/monitor/violations/${id}/false-positive`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${useAuthStore.getState().token}` }
+      });
+      toast.success('Marcado como falso positivo');
+      fetchViolations();
+    } catch (e) { toast.error('Error al actualizar'); }
+  };
+
+  const handleFineSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!selectedViolationId) return;
+    try {
+      await fetch(`/api/monitor/violations/${selectedViolationId}/fine`, {
+        method: 'PATCH',
+        headers: { 
+          'Authorization': `Bearer ${useAuthStore.getState().token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ residentUsername: fineResident, description: fineDescription })
+      });
+      toast.success('Multa asignada exitosamente');
+      setShowFineModal(false);
+      setFineResident('');
+      setFineDescription('');
+      fetchViolations();
+    } catch (e) { toast.error('Error al asignar multa'); }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -77,7 +121,7 @@ export const Infractions = () => {
           </div>
         </div>
 
-        {role !== 'RESIDENTE' && (
+        {role === 'ADMIN' || role === 'RECEPCION' ? (
           <button 
             onClick={() => setShowModal(true)}
             className="flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium text-sm"
@@ -85,7 +129,7 @@ export const Infractions = () => {
             <Plus className="w-4 h-4 mr-2" />
             Nueva Infracción
           </button>
-        )}
+        ) : null}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -116,7 +160,7 @@ export const Infractions = () => {
               <h3 className="text-zinc-200 font-medium mb-1">{v.type.replace(/_/g, ' ')}</h3>
               <p className="text-zinc-400 text-sm mb-4 line-clamp-2">{v.description || 'Sin descripción'}</p>
               
-              <div className="flex items-center justify-between pt-4 border-t border-zinc-800/50">
+              <div className="flex items-center justify-between pt-4 border-t border-zinc-800/50 mb-4">
                 <div className="text-xs text-zinc-500">
                   Residente: <span className="text-zinc-300 font-medium">{v.residentUsername || 'Desconocido'}</span>
                 </div>
@@ -124,6 +168,39 @@ export const Infractions = () => {
                   Estado: <span className="text-zinc-300">{v.status}</span>
                 </div>
               </div>
+
+              {(role === 'ADMIN' || role === 'RECEPCION') && v.status === 'PENDING' && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <button 
+                    onClick={() => handleResolve(v.id)}
+                    className="flex-1 px-2 py-1.5 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 rounded text-xs font-medium transition-colors"
+                  >
+                    Resolver
+                  </button>
+                  <button 
+                    onClick={() => handleFalsePositive(v.id)}
+                    className="flex-1 px-2 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded text-xs font-medium transition-colors"
+                  >
+                    Falso Positivo
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setSelectedViolationId(v.id);
+                      setShowFineModal(true);
+                    }}
+                    className="flex-1 px-2 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded text-xs font-medium transition-colors"
+                  >
+                    Multar
+                  </button>
+                </div>
+              )}
+              {role === 'RESIDENTE' && (v.status === 'PENDING' || v.status === 'FINED') && (
+                <div className="pt-3 border-t border-zinc-800/50 mt-2">
+                  <p className="text-xs text-orange-400 font-medium text-center">
+                    Diríjase a recepción para resolver su estado
+                  </p>
+                </div>
+              )}
             </div>
           ))
         )}
@@ -206,6 +283,55 @@ export const Infractions = () => {
                   className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium"
                 >
                   Guardar Multa
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showFineModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-sm overflow-hidden">
+            <div className="p-6 border-b border-zinc-800">
+              <h2 className="text-xl font-bold text-zinc-100">Asignar Multa</h2>
+            </div>
+            <form onSubmit={handleFineSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-1">Usuario del Residente a Multar</label>
+                <input 
+                  required
+                  type="text" 
+                  value={fineResident}
+                  onChange={(e) => setFineResident(e.target.value)}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:border-red-500/50"
+                  placeholder="Ej. residente1"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-1">Descripción de la Multa</label>
+                <textarea 
+                  required
+                  rows={3}
+                  value={fineDescription}
+                  onChange={(e) => setFineDescription(e.target.value)}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:border-red-500/50 resize-none"
+                  placeholder="Motivo de la multa..."
+                />
+              </div>
+              <div className="pt-4 flex justify-end space-x-3">
+                <button 
+                  type="button"
+                  onClick={() => setShowFineModal(false)}
+                  className="px-4 py-2 text-zinc-400 hover:text-zinc-200 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit"
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium"
+                >
+                  Confirmar Multa
                 </button>
               </div>
             </form>

@@ -34,4 +34,18 @@ public class MqttConfig {
         adapter.setOutputChannel(mqttInputChannel());
         return adapter;
     }
+    @Bean
+    public MessageChannel mqttOutboundChannel() {
+        return new DirectChannel();
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = "mqttOutboundChannel")
+    public org.springframework.messaging.MessageHandler mqttOutbound() {
+        org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler messageHandler =
+                new org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler(brokerUrl, clientId + "_out");
+        messageHandler.setAsync(true);
+        messageHandler.setDefaultTopic("condominio/sensors/alarm");
+        return messageHandler;
+    }
 }

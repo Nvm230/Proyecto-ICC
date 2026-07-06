@@ -11,18 +11,18 @@ client.on('connect', () => {
 
 const sensors = ["PIR_LOBBY", "REED_DOOR_BACK", "HCSR04_GATE"];
 
-setInterval(() => {
-    if (!client.connected) return;
-
-    // Trigger an event with 30% probability every 20 seconds
-    if (Math.random() < 0.3) {
-        const event = {
-            sensor_id: sensors[Math.floor(Math.random() * sensors.length)],
-            status: "TRIGGERED",
-            timestamp: Date.now()
-        };
-        
-        console.log(`📡 [Mock Sensor] Publishing Event: ${JSON.stringify(event)}`);
-        client.publish("condominio/sensors/events", JSON.stringify(event));
-    }
-}, 20000);
+// setInterval(() => {
+//     if (!client.connected) return;
+// 
+//     // Trigger an event with 30% probability every 20 seconds
+//     if (Math.random() < 0.3) {
+//         const event = {
+//             sensor_id: sensors[Math.floor(Math.random() * sensors.length)],
+//             status: "TRIGGERED",
+//             timestamp: Date.now()
+//         };
+//         
+//         console.log(`📡 [Mock Sensor] Publishing Event: ${JSON.stringify(event)}`);
+//         client.publish("condominio/sensors/events", JSON.stringify(event));
+//     }
+// }, 20000);

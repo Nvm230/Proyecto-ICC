@@ -6,11 +6,9 @@ import Dashboard from './pages/Dashboard';
 import { Users } from './pages/Users';
 import { Infractions } from './pages/Infractions';
 import { Settings } from './pages/Settings';
+import { Cameras } from './pages/Cameras';
 
 import { useAuthStore } from './store/useAuthStore';
-
-// Placeholder component for cameras
-const Cameras = () => <div className="text-zinc-400 p-8 text-center bg-zinc-900 rounded-2xl border border-zinc-800">Cámaras (En desarrollo)</div>;
 
 // Smart index: residents go straight to their infractions
 const DashboardIndex = () => {
