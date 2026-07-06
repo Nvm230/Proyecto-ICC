@@ -1,117 +1,97 @@
-\documentclass{beamer}
-\usetheme{Madrid}
-\usecolortheme{beaver}
+\documentclass[aspectratio=169]{beamer}
+\usetheme{metropolis}
 \usepackage[utf8]{inputenc}
-\usepackage[spanish]{babel}
+\usepackage[spanish,es-noquoting]{babel}
 \usepackage{graphicx}
 \usepackage{tikz}
-\usetikzlibrary{shapes,arrows,positioning,fit}
+\usetikzlibrary{shapes,positioning,fit}
 
 \title{Condominio Smart System}
-\subtitle{Plataforma Integral de Monitoreo Inteligente y Control de Accesos}
+\subtitle{Plataforma de Monitoreo Inteligente}
 \author{Marco Antonio Alegria Rodriguez}
-\institute{Presentación de Proyecto Final}
 \date{\today}
 
 \begin{document}
 
-\frame{\titlepage}
+\maketitle
 
-\begin{frame}
-\frametitle{El Problema Actual}
+\begin{frame}{El Problema}
 \begin{itemize}
-    \item \textbf{Dependencia Humana:} Conserjes monitoreando múltiples pantallas generan fatiga y puntos ciegos.
-    \item \textbf{Respuesta Tardía:} Las cámaras de seguridad convencionales solo sirven como evidencia forense, no previenen el delito.
-    \item \textbf{Falta de Integración:} Los vecinos no tienen visibilidad de la seguridad en tiempo real.
-    \item \textbf{Desafíos Comunes:} Vehículos mal estacionados, mascotas en áreas prohibidas o ingresos no autorizados.
+    \item \textbf{Cansancio:} Los conserjes se cansan de mirar pantallas todo el día y se les pasan cosas.
+    \item \textbf{Cámaras pasivas:} Las cámaras de seguridad típicas solo sirven para ver qué pasó después del robo, no para evitarlo.
+    \item \textbf{Desorden:} Es muy difícil controlar a las mascotas sueltas o los autos mal estacionados.
+    \item \textbf{Falta de información:} Los vecinos no se enteran de las cosas en tiempo real.
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Nuestra Solución}
-\textbf{Condominio Smart System}
+\begin{frame}{Nuestra Solución}
+Creamos el \textbf{Condominio Smart System}, que es súper rápido y funciona solo:
 \vspace{0.5cm}
 \begin{itemize}
-    \item \textbf{Proactivo:} Un sistema inteligente que detecta y alerta en milisegundos.
-    \item \textbf{IoT y Sensores:} Nodos de bajo costo (ESP32) instalados en los perímetros.
-    \item \textbf{Visión Artificial (IA):} Análisis de flujos de video para detectar anomalías automáticamente (Personas, Vehículos, Mascotas).
-    \item \textbf{Automatización:} Activación de sirenas y balizas sin intervención humana y notificación web inmediata a los guardias.
+    \item \textbf{Placas ESP32:} Pusimos microcontroladores que cuestan solo 30 soles, lo cual hace que sea súper barato de implementar.
+    \item \textbf{Visión con IA:} El sistema mira el video de las cámaras y se da cuenta si es una persona, un auto o un perro.
+    \item \textbf{Respuestas rápidas:} Si pasa algo malo, suena la alarma solita y le avisa al guardia por la web al instante.
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Perfiles del Sistema}
-Para mantener un entorno ordenado y seguro, el sistema ofrece:
+\begin{frame}{¿Quiénes usan el sistema?}
+Hicimos que cada persona tenga su propia vista:
 \vspace{0.5cm}
 \begin{itemize}
-    \item \textbf{Administrador:} Acceso total al centro de comando, auditoría de infracciones y gestión del personal.
-    \item \textbf{Recepción:} Perfil administrativo para procesar pagos de multas, registrar faltas menores y asistir a los residentes.
-    \item \textbf{Seguridad:} Perfil táctico que recibe alertas instantáneas para actuar de inmediato en terreno.
-    \item \textbf{Residente:} Transparencia absoluta. Pueden ver su historial, infracciones y notificaciones asociadas a su unidad.
+    \item \textbf{Administrador:} Puede ver todo, cambiar reglas y revisar multas.
+    \item \textbf{Recepción:} Ve la lista de problemas para ayudar a los vecinos o cobrar multas.
+    \item \textbf{Seguridad:} Solo le llegan las alertas urgentes para que vaya rápido al lugar.
+    \item \textbf{Residente:} Entra a ver si le llegó alguna notificación o multa a su casa.
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Tecnologías y Arquitectura}
-Stack moderno y de alta disponibilidad:
+\begin{frame}{Arquitectura y Tecnologías}
+Todo está hecho con herramientas modernas:
 \begin{itemize}
-    \item \textbf{Frontend:} React, TypeScript, TailwindCSS. WebSockets para alertas en tiempo real.
-    \item \textbf{Backend Core:} Java con Spring Boot 3 y Spring Security (JWT).
-    \item \textbf{Microservicio de IA:} Python, OpenCV/YOLO para visión computacional.
-    \item \textbf{IoT y Mensajería:} Microcontroladores ESP32 y Broker MQTT Eclipse Mosquitto.
-    \item \textbf{Infraestructura:} Contenedores Docker, Base de Datos PostgreSQL, API Gateway con Nginx.
+    \item \textbf{Frontend:} React y TailwindCSS (queda muy bonito).
+    \item \textbf{Backend:} Spring Boot en Java con seguridad JWT.
+    \item \textbf{La IA:} Un script en Python que usa OpenCV para detectar cosas.
+    \item \textbf{Hardware:} Las plaquitas ESP32 (de 30 soles) que mandan datos por MQTT.
+    \item \textbf{Base de Datos:} PostgreSQL, todo corriendo en Docker.
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Diagrama de Arquitectura}
+\begin{frame}{Diagrama de Arquitectura}
 \begin{center}
-\resizebox{0.9\textwidth}{!}{
+\resizebox{0.8\textwidth}{!}{
 \begin{tikzpicture}[
     node distance=1cm and 1cm,
-    box/.style={rectangle, draw=black, thick, fill=blue!10, text width=2cm, text centered, rounded corners, font=\scriptsize},
-    broker/.style={rectangle, draw=red!80, thick, fill=red!10, text width=2cm, text centered, rounded corners, font=\scriptsize},
-    line/.style={draw, thick, -latex'}
+    box/.style={rectangle, draw=gray, thick, fill=gray!10, text width=2cm, text centered, rounded corners, font=\scriptsize},
 ]
 
 \node[box] (iot) {ESP32};
-\node[broker, right=of iot] (mqtt) {MQTT};
-\node[box, above=of mqtt] (ia) {IA (Vision)};
-\node[box, right=of mqtt] (backend) {Spring Boot};
+\node[box, right=of iot, fill=orange!20] (mqtt) {MQTT};
+\node[box, above=of mqtt, fill=blue!20] (ia) {Python IA};
+\node[box, right=of mqtt, fill=green!20] (backend) {Spring Boot};
 \node[box, below=of backend] (db) {PostgreSQL};
-\node[box, right=of backend] (frontend) {React Web};
+\node[box, right=of backend, fill=yellow!20] (frontend) {React};
 
-\path [line, <->] (iot) -- (mqtt);
-\path [line, ->] (ia) -- (mqtt);
-\path [line, <->] (mqtt) -- (backend);
-\path [line, <->] (backend) -- (db);
-\path [line, <->] (backend) -- (frontend);
+\path [draw, thick, latex-latex] (iot) -- (mqtt);
+\path [draw, thick, -latex] (ia) -- (mqtt);
+\path [draw, thick, latex-latex] (mqtt) -- (backend);
+\path [draw, thick, latex-latex] (backend) -- (db);
+\path [draw, thick, latex-latex] (backend) -- (frontend);
 
 \end{tikzpicture}
 }
 \end{center}
 \end{frame}
 
-\begin{frame}
-\frametitle{Resultados e Impacto}
+\begin{frame}{¿Por qué esto sirve?}
 \begin{itemize}
-    \item \textbf{Seguridad:} Detección y disuasión en tiempo real. Prevención efectiva de delitos y faltas.
-    \item \textbf{Optimización de Recursos:} Los guardias son más productivos, evitando fatiga por mirar cámaras estáticas.
-    \item \textbf{Transparencia y Convivencia:} Las multas (como mascotas en piscina) son imparciales, dictadas por IA y sensores.
-    \item \textbf{Escalabilidad:} La arquitectura basada en microservicios permite crecer a condominios de cualquier tamaño.
+    \item \textbf{Más seguros:} La IA no parpadea, así que pilla a los ladrones antes de que entren.
+    \item \textbf{Guardias más útiles:} Los conserjes pueden hacer sus rondas o ayudar en portería en vez de ver teles aburridas.
+    \item \textbf{Multas justas:} Si alguien mete a su perro a la piscina, el sistema lo pilla automáticamente y sin favoritismos.
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Conclusión}
-\begin{center}
-    \Large
-    Gracias por su atención.\\
-    \vspace{1cm}
-    \normalsize
-    \textbf{Condominio Smart System}\\
-    El futuro de la seguridad residencial.
-\end{center}
+\begin{frame}[standout]
+  ¡Gracias por su atención!
 \end{frame}
 
 \end{document}

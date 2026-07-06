@@ -1,12 +1,12 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[spanish]{babel}
+\usepackage[spanish,es-noquoting]{babel}
 \usepackage{geometry}
 \geometry{a4paper, margin=2.5cm}
 \usepackage{setspace}
 \onehalfspacing
 \usepackage{tikz}
-\usetikzlibrary{shapes,arrows,positioning,fit,backgrounds}
+\usetikzlibrary{shapes,arrows,positioning,fit,backgrounds,babel}
 \usepackage{titlesec}
 \usepackage{hyperref}
 \usepackage{graphicx}
@@ -53,11 +53,11 @@
 \newpage
 
 \section{Identificación del Problema}
-En la actualidad, los condominios y complejos residenciales enfrentan grandes desafíos en cuanto a seguridad, gestión comunitaria y control de accesos. El problema principal radica en la dependencia exclusiva de la vigilancia humana y sistemas análogos o desconectados entre sí. Esta dependencia genera puntos ciegos, fatiga visual en los conserjes, y tiempos de reacción extremadamente lentos ante posibles intrusiones o comportamientos anómalos. 
+Hoy en día, la mayoría de los condominios tienen un gran problema con la seguridad y el orden. Todo depende de que los conserjes estén mirando las pantallas todo el tiempo, lo cual es súper cansador y al final siempre se les pasan cosas. Las cámaras normales solo graban y sirven para ver qué pasó después del robo, pero no te avisan en el momento.
 
-Ejemplos comunes de estas anomalías incluyen la presencia de vehículos no autorizados en estacionamientos, el tránsito de mascotas en áreas restringidas (como piscinas o zonas de juegos infantiles exclusivas), o el acceso de personas ajenas a la comunidad en horarios no permitidos.
+Además, siempre hay problemas típicos de convivencia: gente que estaciona mal su auto, vecinos que meten a sus mascotas a la piscina, o personas extrañas dando vueltas por los pasillos.
 
-Este problema afecta directamente a múltiples actores dentro de la comunidad:
+Este problema nos afecta a todos:
 \begin{itemize}
     \item \textbf{Los Residentes:} Quienes se ven expuestos a situaciones de inseguridad, robo de bienes, invasión de su privacidad, y un deterioro general en su calidad de vida. La falta de un sistema de notificaciones en tiempo real los deja ciegos ante las incidencias que ocurren a metros de su hogar.
     \item \textbf{Los Administradores y Conserjes:} Quienes sufren de sobrecarga laboral y estrés al tener que monitorear múltiples pantallas de seguridad simultáneamente. El error humano es natural cuando una sola persona debe procesar decenas de canales de video durante turnos de 12 horas.
@@ -67,13 +67,13 @@ Este problema afecta directamente a múltiples actores dentro de la comunidad:
 Es de vital importancia resolver esta situación. La seguridad patrimonial y la tranquilidad de los habitantes es el pilar de la convivencia en un condominio. Si no se implementa una solución automatizada, las vulnerabilidades continuarán siendo explotadas, los tiempos de respuesta ante emergencias seguirán siendo deficientes, y la percepción de seguridad de la comunidad disminuirá inexorablemente.
 
 \section{Propuesta de Solución}
-La solución propuesta es el \textbf{Condominio Smart System}, una plataforma integral de última generación que combina el Internet de las Cosas (IoT) con Inteligencia Artificial (IA) para crear un entorno residencial seguro, autónomo y proactivo.
+Para solucionar esto, armamos el \textbf{Condominio Smart System}. Básicamente, es una plataforma que junta el Internet de las Cosas (IoT) con Inteligencia Artificial (IA) para que el edificio se cuide prácticamente solo.
 
-El sistema funcionará mediante la integración de hardware de bajo costo (microcontroladores ESP32 y sensores físicos) instalados en los pórticos, barreras vehiculares y perímetros vulnerables, los cuales detectarán movimiento y proximidad de manera determinista. De manera simultánea y complementaria, un módulo de Visión por Computadora (IA) analizará los flujos de video continuo de las cámaras de seguridad IP ya existentes en el recinto. Toda la información recabada, tanto del mundo físico (IoT) como del análisis de video (IA), será enviada en tiempo real mediante el protocolo MQTT hacia un ecosistema de microservicios central (Backend).
+La idea es poner microcontroladores ESP32 y sensores baratitos en las puertas y muros. Al mismo tiempo, tenemos un script de IA que mira las cámaras que ya tiene el edificio para detectar si pasa una persona, un auto o un perro. Todo esto se manda por MQTT a nuestro servidor (Backend).
 
-Cuando el sistema detecte una anomalía, el servidor procesará el evento a través de su motor de reglas y enviará comandos automáticos de regreso al hardware para activar alarmas físicas (como buzzers disuasorios y balizas luminosas). En paralelo, notificará a través de una aplicación web al personal de recepción, guardias de seguridad y a los residentes afectados.
+Si alguien se mete donde no debe, el sistema hace sonar una alarma y prende luces automáticamente para asustarlo, y de paso le manda una alerta al guardia por la web.
 
-El valor agregado para el usuario y el administrador es inmenso. El sistema garantiza una vigilancia activa 24/7 sin interrupciones, automatiza las alertas y disuade a los intrusos de forma inmediata. A diferencia de un sistema de cámaras tradicional (donde el video solo sirve como evidencia forense posterior al delito), el \textit{Condominio Smart System} actúa de forma preventiva y proactiva, detectando y mitigando la incidencia en el instante mismo en que ocurre.
+Lo genial de esto es que en vez de tener cámaras aburridas que solo graban, ahora tenemos un sistema que se da cuenta de las cosas en tiempo real y reacciona al instante, ayudando un montón a los conserjes.
 
 \section{Definición de Perfiles del Sistema}
 Para garantizar la escalabilidad, la privacidad de los datos y el principio de mínimo privilegio, el sistema segmenta las funcionalidades en cuatro roles bien definidos, cada uno con interfaces y alcances específicos dentro de la plataforma web.
@@ -127,7 +127,7 @@ El componente físico (IoT) es la primera línea de defensa perimetral. Se ha di
 
 \subsection{Descripción de Componentes}
 \begin{itemize}
-    \item \textbf{Microcontrolador ESP32:} Funciona como el nodo principal de procesamiento en el borde (Edge). Gracias a su módulo Wi-Fi integrado, se conecta a la red del condominio y establece una comunicación bidireccional mediante el protocolo ligero MQTT. Es responsable de leer los sensores y accionar los actuadores en cuestión de milisegundos.
+    \item \textbf{Microcontrolador ESP32:} Es el cerebro de los sensores. Lo mejor es que cuesta solo unos 30 soles, así que es súper barato poner varios por todo el condominio. Se conecta al Wi-Fi y manda datos súper rápido usando MQTT.
     \item \textbf{Sensor Ultrasónico (HC-SR04):} Instalado en las barreras vehiculares o pasillos estrechos, emite pulsos ultrasónicos para calcular la distancia de los objetos. Permite detectar intentos de cruce bajo barreras cerradas o medir si un vehículo está bloqueando un acceso.
     \item \textbf{Sensor Infrarrojo Pasivo (PIR):} Detecta radiación térmica humana en movimiento. Ideal para zonas de acceso restringido absoluto (cuartos de bombas, azoteas, transformadores eléctricos) donde cualquier presencia es inmediatamente una infracción.
     \item \textbf{Sensor Magnético (Reed Switch):} Instalado en puertas de emergencia. Envía una alerta si la puerta es abierta de forma indebida.
@@ -188,17 +188,17 @@ Para lograr un sistema verdaderamente robusto, escalable y tolerante a fallos, s
 \end{scope}
 
 % Lines
-\path [line, <->] (iot) -- node[above, font=\scriptsize] {Pub/Sub} (mqtt);
-\path [line, ->] (ia) -- node[right, font=\scriptsize] {Eventos JSON} (mqtt);
-\path [line, <->] (mqtt) -- node[above, font=\scriptsize] {Integración} (monitor);
-\path [line, ->] (mqtt) -- (notif);
+\path [draw, thick, latex-latex] (iot) -- node[above, font=\scriptsize] {Pub/Sub} (mqtt);
+\path [draw, thick, -latex] (ia) -- node[right, font=\scriptsize] {Eventos JSON} (mqtt);
+\path [draw, thick, latex-latex] (mqtt) -- node[above, font=\scriptsize] {Integración} (monitor);
+\path [draw, thick, -latex] (mqtt) -- (notif);
 
-\path [line, <->] (monitor) -- (db);
-\path [line, <->] (auth) -- (db);
+\path [draw, thick, latex-latex] (monitor) -- (db);
+\path [draw, thick, latex-latex] (auth) -- (db);
 
-\path [line, <->] (nginx) -- (auth);
-\path [line, <->] (nginx) -- (monitor);
-\path [line, <->] (frontend) -- node[right, font=\scriptsize] {HTTP/REST \& WS} (nginx);
+\path [draw, thick, latex-latex] (nginx) -- (auth);
+\path [draw, thick, latex-latex] (nginx) -- (monitor);
+\path [draw, thick, latex-latex] (frontend) -- node[right, font=\scriptsize] {HTTP/REST \& WS} (nginx);
 
 \end{tikzpicture}
 \end{center}
