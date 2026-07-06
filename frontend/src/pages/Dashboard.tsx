@@ -26,7 +26,8 @@ const TYPE_MAP: Record<string, string> = {
   NOISE_COMPLAINT: 'Ruido Molesto',
   PET_RESTRICTED_AREA: 'Mascota en Área Restringida',
   UNAUTHORIZED_PARKING: 'Estacionamiento Indebido',
-  LATE_PAYMENT: 'Retraso en Pago'
+  LATE_PAYMENT: 'Retraso en Pago',
+  SENSOR_TRIGGERED: 'Alerta de Sensor'
 };
 
 interface Violation {
@@ -145,7 +146,7 @@ export default function Dashboard() {
   }, []);
 
   const stats = [
-    { label: 'Cámaras Activas', value: '12/12', icon: Camera, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+    { label: 'Cámaras Activas', value: '3/3', icon: Camera, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
     { label: 'Alertas Hoy', value: violations.length.toString(), icon: Activity, color: 'text-blue-400', bg: 'bg-blue-400/10' },
     { label: 'Infracciones Pendientes', value: violations.filter(v => v.status === 'PENDING').length.toString(), icon: AlertOctagon, color: 'text-rose-400', bg: 'bg-rose-400/10' },
     { label: 'Resueltas', value: '28', icon: CheckCircle2, color: 'text-zinc-400', bg: 'bg-zinc-400/10' },

@@ -24,7 +24,8 @@ const TYPE_MAP: Record<string, string> = {
   NOISE_COMPLAINT: 'Ruido Molesto',
   PET_RESTRICTED_AREA: 'Mascota en Área Restringida',
   UNAUTHORIZED_PARKING: 'Estacionamiento Indebido',
-  LATE_PAYMENT: 'Retraso en Pago'
+  LATE_PAYMENT: 'Retraso en Pago',
+  SENSOR_TRIGGERED: 'Alerta de Sensor'
 };
 
 const PAGE_SIZE = 9;
