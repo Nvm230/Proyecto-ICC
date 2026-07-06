@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.7.4)  6 JUL 2026 13:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.7.4)  6 JUL 2026 13:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -797,13 +797,13 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `proyecto.out' has not changed.
-(rerunfilecheck)             Checksum: 588CAC9A9F67443AD0BC4D6492876A38;4309.
+(rerunfilecheck)             Checksum: D876D06AF653BE755CCD464940A21998;4496.
  ) 
 Here is how much of TeX's memory you used:
- 24516 strings out of 469453
- 478163 string characters out of 5469038
+ 24518 strings out of 469453
+ 478185 string characters out of 5469038
  914280 words of memory out of 5000000
- 52749 multiletter control sequences out of 15000+600000
+ 52750 multiletter control sequences out of 15000+600000
  633734 words of font info for 60 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
  102i,7n,107p,507b,902s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -814,10 +814,10 @@ amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
 8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/sh
 are/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf-dist
 /fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on proyecto.pdf (11 pages, 144147 bytes).
+Output written on proyecto.pdf (11 pages, 146239 bytes).
 PDF statistics:
- 223 PDF objects out of 1000 (max. 8388607)
- 192 compressed objects within 2 object streams
- 41 named destinations out of 1000 (max. 500000)
- 181 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 231 PDF objects out of 1000 (max. 8388607)
+ 200 compressed objects within 2 object streams
+ 42 named destinations out of 1000 (max. 500000)
+ 189 words of extra memory for PDF output out of 10000 (max. 10000000)
 
