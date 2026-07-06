@@ -1,0 +1,117 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usecolortheme{beaver}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,fit}
+
+\title{Condominio Smart System}
+\subtitle{Plataforma Integral de Monitoreo Inteligente y Control de Accesos}
+\author{Marco Antonio Alegria Rodriguez}
+\institute{Presentación de Proyecto Final}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{El Problema Actual}
+\begin{itemize}
+    \item \textbf{Dependencia Humana:} Conserjes monitoreando múltiples pantallas generan fatiga y puntos ciegos.
+    \item \textbf{Respuesta Tardía:} Las cámaras de seguridad convencionales solo sirven como evidencia forense, no previenen el delito.
+    \item \textbf{Falta de Integración:} Los vecinos no tienen visibilidad de la seguridad en tiempo real.
+    \item \textbf{Desafíos Comunes:} Vehículos mal estacionados, mascotas en áreas prohibidas o ingresos no autorizados.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Nuestra Solución}
+\textbf{Condominio Smart System}
+\vspace{0.5cm}
+\begin{itemize}
+    \item \textbf{Proactivo:} Un sistema inteligente que detecta y alerta en milisegundos.
+    \item \textbf{IoT y Sensores:} Nodos de bajo costo (ESP32) instalados en los perímetros.
+    \item \textbf{Visión Artificial (IA):} Análisis de flujos de video para detectar anomalías automáticamente (Personas, Vehículos, Mascotas).
+    \item \textbf{Automatización:} Activación de sirenas y balizas sin intervención humana y notificación web inmediata a los guardias.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Perfiles del Sistema}
+Para mantener un entorno ordenado y seguro, el sistema ofrece:
+\vspace{0.5cm}
+\begin{itemize}
+    \item \textbf{Administrador:} Acceso total al centro de comando, auditoría de infracciones y gestión del personal.
+    \item \textbf{Recepción:} Perfil administrativo para procesar pagos de multas, registrar faltas menores y asistir a los residentes.
+    \item \textbf{Seguridad:} Perfil táctico que recibe alertas instantáneas para actuar de inmediato en terreno.
+    \item \textbf{Residente:} Transparencia absoluta. Pueden ver su historial, infracciones y notificaciones asociadas a su unidad.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Tecnologías y Arquitectura}
+Stack moderno y de alta disponibilidad:
+\begin{itemize}
+    \item \textbf{Frontend:} React, TypeScript, TailwindCSS. WebSockets para alertas en tiempo real.
+    \item \textbf{Backend Core:} Java con Spring Boot 3 y Spring Security (JWT).
+    \item \textbf{Microservicio de IA:} Python, OpenCV/YOLO para visión computacional.
+    \item \textbf{IoT y Mensajería:} Microcontroladores ESP32 y Broker MQTT Eclipse Mosquitto.
+    \item \textbf{Infraestructura:} Contenedores Docker, Base de Datos PostgreSQL, API Gateway con Nginx.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Diagrama de Arquitectura}
+\begin{center}
+\resizebox{0.9\textwidth}{!}{
+\begin{tikzpicture}[
+    node distance=1cm and 1cm,
+    box/.style={rectangle, draw=black, thick, fill=blue!10, text width=2cm, text centered, rounded corners, font=\scriptsize},
+    broker/.style={rectangle, draw=red!80, thick, fill=red!10, text width=2cm, text centered, rounded corners, font=\scriptsize},
+    line/.style={draw, thick, -latex'}
+]
+
+\node[box] (iot) {ESP32};
+\node[broker, right=of iot] (mqtt) {MQTT};
+\node[box, above=of mqtt] (ia) {IA (Vision)};
+\node[box, right=of mqtt] (backend) {Spring Boot};
+\node[box, below=of backend] (db) {PostgreSQL};
+\node[box, right=of backend] (frontend) {React Web};
+
+\path [line, <->] (iot) -- (mqtt);
+\path [line, ->] (ia) -- (mqtt);
+\path [line, <->] (mqtt) -- (backend);
+\path [line, <->] (backend) -- (db);
+\path [line, <->] (backend) -- (frontend);
+
+\end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{Resultados e Impacto}
+\begin{itemize}
+    \item \textbf{Seguridad:} Detección y disuasión en tiempo real. Prevención efectiva de delitos y faltas.
+    \item \textbf{Optimización de Recursos:} Los guardias son más productivos, evitando fatiga por mirar cámaras estáticas.
+    \item \textbf{Transparencia y Convivencia:} Las multas (como mascotas en piscina) son imparciales, dictadas por IA y sensores.
+    \item \textbf{Escalabilidad:} La arquitectura basada en microservicios permite crecer a condominios de cualquier tamaño.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Conclusión}
+\begin{center}
+    \Large
+    Gracias por su atención.\\
+    \vspace{1cm}
+    \normalsize
+    \textbf{Condominio Smart System}\\
+    El futuro de la seguridad residencial.
+\end{center}
+\end{frame}
+
+\end{document}

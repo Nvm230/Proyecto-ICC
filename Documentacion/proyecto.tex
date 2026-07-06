@@ -1,0 +1,265 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,fit,backgrounds}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\titleformat{\section}{\Large\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection.}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection.}{1em}{}
+
+\begin{document}
+
+% Portada
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    \Huge
+    \textbf{Condominio Smart System}
+    
+    \vspace{1.5cm}
+    
+    \Large
+    Plataforma integral de monitoreo inteligente y control de accesos para complejos residenciales
+    
+    \vspace{3cm}
+    
+    \textbf{Desarrollado por:} \\
+    \vspace{0.5cm}
+    Marco Antonio Alegria Rodriguez
+    
+    \vfill
+    
+    \normalsize
+    Documento de Arquitectura y Especificación de Proyecto \\
+    \today
+    
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Identificación del Problema}
+En la actualidad, los condominios y complejos residenciales enfrentan grandes desafíos en cuanto a seguridad, gestión comunitaria y control de accesos. El problema principal radica en la dependencia exclusiva de la vigilancia humana y sistemas análogos o desconectados entre sí. Esta dependencia genera puntos ciegos, fatiga visual en los conserjes, y tiempos de reacción extremadamente lentos ante posibles intrusiones o comportamientos anómalos. 
+
+Ejemplos comunes de estas anomalías incluyen la presencia de vehículos no autorizados en estacionamientos, el tránsito de mascotas en áreas restringidas (como piscinas o zonas de juegos infantiles exclusivas), o el acceso de personas ajenas a la comunidad en horarios no permitidos.
+
+Este problema afecta directamente a múltiples actores dentro de la comunidad:
+\begin{itemize}
+    \item \textbf{Los Residentes:} Quienes se ven expuestos a situaciones de inseguridad, robo de bienes, invasión de su privacidad, y un deterioro general en su calidad de vida. La falta de un sistema de notificaciones en tiempo real los deja ciegos ante las incidencias que ocurren a metros de su hogar.
+    \item \textbf{Los Administradores y Conserjes:} Quienes sufren de sobrecarga laboral y estrés al tener que monitorear múltiples pantallas de seguridad simultáneamente. El error humano es natural cuando una sola persona debe procesar decenas de canales de video durante turnos de 12 horas.
+    \item \textbf{La Directiva del Condominio:} Que enfrenta un aumento en los costos operativos de seguridad al tener que contratar más personal para cubrir las deficiencias, sin lograr garantizar resultados efectivos a largo plazo.
+\end{itemize}
+
+Es de vital importancia resolver esta situación. La seguridad patrimonial y la tranquilidad de los habitantes es el pilar de la convivencia en un condominio. Si no se implementa una solución automatizada, las vulnerabilidades continuarán siendo explotadas, los tiempos de respuesta ante emergencias seguirán siendo deficientes, y la percepción de seguridad de la comunidad disminuirá inexorablemente.
+
+\section{Propuesta de Solución}
+La solución propuesta es el \textbf{Condominio Smart System}, una plataforma integral de última generación que combina el Internet de las Cosas (IoT) con Inteligencia Artificial (IA) para crear un entorno residencial seguro, autónomo y proactivo.
+
+El sistema funcionará mediante la integración de hardware de bajo costo (microcontroladores ESP32 y sensores físicos) instalados en los pórticos, barreras vehiculares y perímetros vulnerables, los cuales detectarán movimiento y proximidad de manera determinista. De manera simultánea y complementaria, un módulo de Visión por Computadora (IA) analizará los flujos de video continuo de las cámaras de seguridad IP ya existentes en el recinto. Toda la información recabada, tanto del mundo físico (IoT) como del análisis de video (IA), será enviada en tiempo real mediante el protocolo MQTT hacia un ecosistema de microservicios central (Backend).
+
+Cuando el sistema detecte una anomalía, el servidor procesará el evento a través de su motor de reglas y enviará comandos automáticos de regreso al hardware para activar alarmas físicas (como buzzers disuasorios y balizas luminosas). En paralelo, notificará a través de una aplicación web al personal de recepción, guardias de seguridad y a los residentes afectados.
+
+El valor agregado para el usuario y el administrador es inmenso. El sistema garantiza una vigilancia activa 24/7 sin interrupciones, automatiza las alertas y disuade a los intrusos de forma inmediata. A diferencia de un sistema de cámaras tradicional (donde el video solo sirve como evidencia forense posterior al delito), el \textit{Condominio Smart System} actúa de forma preventiva y proactiva, detectando y mitigando la incidencia en el instante mismo en que ocurre.
+
+\section{Definición de Perfiles del Sistema}
+Para garantizar la escalabilidad, la privacidad de los datos y el principio de mínimo privilegio, el sistema segmenta las funcionalidades en cuatro roles bien definidos, cada uno con interfaces y alcances específicos dentro de la plataforma web.
+
+\subsection{Perfil de Administrador (ADMIN)}
+Es el usuario con los mayores privilegios del sistema, encargado de la operatividad general, la configuración técnica y la gestión de todo el personal.
+\begin{itemize}
+    \item \textbf{Centro de Monitoreo Integral:} Visualización en vivo del estado de todos los sensores, cámaras distribuidas, y estadísticas en tiempo real.
+    \item \textbf{Gestión de Usuarios:} Creación, edición, y eliminación de cuentas de residentes, recepcionistas y personal de seguridad.
+    \item \textbf{Auditoría de Infracciones:} Capacidad total para visualizar todas las infracciones, resolver alertas, marcarlas como falsos positivos o aplicar multas formales a los residentes infractores.
+    \item \textbf{Configuración Global:} Ajuste de parámetros del sistema, contraseñas maestras y preferencias de seguridad.
+\end{itemize}
+
+\subsection{Perfil de Recepción (RECEPCION)}
+Diseñado para el personal administrativo de portería o atención al cliente del condominio. Funciona como un perfil de gestión operativa intermedia.
+\begin{itemize}
+    \item \textbf{Gestión de Infracciones:} Visualización del listado completo de infracciones y alertas. Tienen la autoridad para resolver incidentes pendientes y procesar el pago o resolución de infracciones que ya han sido "Multadas" (FINED).
+    \item \textbf{Generación Manual de Infracciones:} Capacidad para registrar infracciones detectadas manualmente (ej. retraso en pagos, mal uso de áreas comunes no monitorizadas por IA).
+    \item \textbf{Visualización de Residentes:} Acceso a la base de datos de usuarios para contactarlos en caso de emergencia.
+\end{itemize}
+
+\subsection{Perfil de Seguridad (SEGURIDAD)}
+Enfocado estrictamente en los guardias de turno y personal de vigilancia móvil.
+\begin{itemize}
+    \item \textbf{Centro de Comando Reactivo:} Acceso exclusivo al Dashboard en vivo para recibir notificaciones sonoras y visuales inmediatas cuando un sensor o la IA detecta una intrusión.
+    \item \textbf{Resolución de Incidentes en Terreno:} Capacidad para marcar alertas como resueltas o como falsos positivos tras acudir al lugar del evento.
+    \item \textbf{Sin acceso administrativo:} No pueden crear usuarios ni asignar multas económicas, su función es 100\% táctica.
+\end{itemize}
+
+\subsection{Perfil de Usuario (RESIDENTE)}
+Diseñado para los habitantes del condominio, enfocado en brindar transparencia, comunicación y tranquilidad.
+\begin{itemize}
+    \item \textbf{Mis Infracciones y Notificaciones:} Acceso a un registro personal de las alertas o multas asociadas a su cuenta o vivienda. Si poseen una multa, el sistema les indicará que deben dirigirse a recepción.
+    \item \textbf{Gestión de Cuenta:} Visualización de sus datos y actualización de contraseñas.
+    \item \textbf{Lectura Limitada:} Privacidad garantizada; no pueden ver las infracciones de sus vecinos ni los eventos de seguridad que no les conciernan directamente.
+\end{itemize}
+
+\section{Aplicación Web (Plataforma)}
+La interfaz principal de interacción será una \textbf{Aplicación Web} de diseño moderno, responsivo (adaptable a monitores ultra-wide de caseta de vigilancia, tablets de recepción y teléfonos móviles de los residentes), con estética tipo "Dark Mode" para reducir la fatiga visual durante los turnos nocturnos.
+
+\subsection{Módulos de la Aplicación}
+\begin{itemize}
+    \item \textbf{Módulo de Autenticación (JWT):} Inicio de sesión seguro respaldado por JSON Web Tokens. Valida credenciales contra la base de datos y enruta al usuario según su rol específico, bloqueando el acceso a rutas no autorizadas.
+    \item \textbf{Centro de Comando (Dashboard):} Un panel visual avanzado desarrollado con React y Tailwind CSS, animado con Framer Motion. Muestra KPIs (Cámaras Activas, Infracciones Hoy), y una tabla reactiva alimentada por WebSockets. Cuando ingresa una intrusión, la tabla se actualiza automáticamente (sin recargar la página) y se lanza una notificación emergente (Toast) en pantalla.
+    \item \textbf{Módulo de Infracciones:} Una bitácora detallada con soporte de paginación. Permite al personal filtrar alertas por severidad (Crítica, Alta, Media, Baja), tipo (Ruido, Vehículos, Mascotas) y estado (Pendiente, Multada, Resuelta).
+    \item \textbf{Módulo de Usuarios:} CRUD completo de gestión de identidades, con protecciones para evitar que se eliminen administradores de forma accidental.
+\end{itemize}
+
+\section{Integración con Hardware (Sensores y Actuadores)}
+El componente físico (IoT) es la primera línea de defensa perimetral. Se ha diseñado un nodo de sensores utilizando componentes altamente accesibles, escalables y efectivos, operando bajo un modelo de red distribuida.
+
+\subsection{Descripción de Componentes}
+\begin{itemize}
+    \item \textbf{Microcontrolador ESP32:} Funciona como el nodo principal de procesamiento en el borde (Edge). Gracias a su módulo Wi-Fi integrado, se conecta a la red del condominio y establece una comunicación bidireccional mediante el protocolo ligero MQTT. Es responsable de leer los sensores y accionar los actuadores en cuestión de milisegundos.
+    \item \textbf{Sensor Ultrasónico (HC-SR04):} Instalado en las barreras vehiculares o pasillos estrechos, emite pulsos ultrasónicos para calcular la distancia de los objetos. Permite detectar intentos de cruce bajo barreras cerradas o medir si un vehículo está bloqueando un acceso.
+    \item \textbf{Sensor Infrarrojo Pasivo (PIR):} Detecta radiación térmica humana en movimiento. Ideal para zonas de acceso restringido absoluto (cuartos de bombas, azoteas, transformadores eléctricos) donde cualquier presencia es inmediatamente una infracción.
+    \item \textbf{Sensor Magnético (Reed Switch):} Instalado en puertas de emergencia. Envía una alerta si la puerta es abierta de forma indebida.
+    \item \textbf{Actuadores (Buzzer y LEDs):} Al recibir un comando de alerta desde el servidor remoto a través de MQTT, el ESP32 activa una frecuencia sonora disuasoria (buzzer) y luces estroboscópicas LED, alertando a los guardias locales y espantando al intruso antes de que consume un delito.
+\end{itemize}
+
+\subsection{Flujo de la Información Física}
+Cuando un PIR detecta movimiento en el perímetro a las 3:00 AM, el ESP32 genera un \textit{payload} JSON y lo publica en el tópico MQTT \texttt{sensors/alerts}. El Broker recibe el mensaje en milisegundos y lo transmite al Backend. El Backend lo almacena, y mediante WebSockets alerta a la pantalla del guardia. Si la severidad lo amerita, el Backend publica de regreso en el tópico \texttt{sensors/actions} el comando para que el ESP32 local dispare su sirena.
+
+\section{Uso de Inteligencia Artificial (Visión Computacional)}
+El sistema no solo confía en sensores ciegos que pueden generar falsos positivos (como el viento o animales pequeños activando un ultrasónico). El valor más grande reside en su microservicio de \textbf{Visión por Computadora}.
+
+\subsection{Funcionamiento de la IA}
+\begin{itemize}
+    \item \textbf{Arquitectura de Inferencia:} Se emplean modelos de Deep Learning para Detección de Objetos, específicamente utilizando tecnologías como YOLO (You Only Look Once) o OpenCV corriendo en un servicio independiente en Python.
+    \item \textbf{Datos Procesados:} La IA ingiere flujos de video continuos (RTSP o frames extraídos) de las cámaras de videovigilancia convencionales ya instaladas en el recinto.
+    \item \textbf{Detección Semántica:} A diferencia de un sensor de movimiento común, la IA "comprende" la escena. Puede clasificar entidades: detectar si la silueta corresponde a un ser humano, a un vehículo, o a un animal. 
+    \item \textbf{Resultados Esperados y Casos de Uso:} 
+    \begin{enumerate}
+        \item \textit{Control de Mascotas:} Si la cámara de la piscina detecta un objeto clasificado como "Perro/Mascota", genera una infracción tipo \texttt{PET\_RESTRICTED\_AREA}.
+        \item \textit{Estacionamiento Indebido:} Si detecta un vehículo detenido por más de 5 minutos en zona de embarque, genera \texttt{UNAUTHORIZED\_PARKING}.
+    \end{enumerate}
+    \item \textbf{Beneficio Cuantitativo:} La IA actúa como un filtro inteligente que descarta el 99\% del video irrelevante. El conserje ya no tiene que buscar incidentes; el incidente lo busca a él, presentándose en su pantalla con la etiqueta precisa, permitiendo una automatización infalible.
+\end{itemize}
+
+\section{Arquitectura Inicial de la Solución}
+Para lograr un sistema verdaderamente robusto, escalable y tolerante a fallos, se adoptó una \textbf{Arquitectura de Microservicios Basada en Eventos} (Event-Driven Microservices Architecture). Todos los servicios se comunican a través de APIs REST y brokers de mensajería, lo que evita cuellos de botella y permite mantener partes del sistema operativas incluso si otras caen.
+
+\vspace{0.5cm}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.5cm and 1.5cm,
+    box/.style={rectangle, draw=black, thick, fill=blue!10, text width=2.8cm, text centered, rounded corners, minimum height=1.5cm, font=\small},
+    db/.style={cylinder, draw=black, thick, fill=green!10, text width=2cm, text centered, shape border rotate=90, aspect=0.25, minimum height=1.5cm, font=\small},
+    broker/.style={rectangle, draw=red!80, thick, fill=red!10, text width=2.8cm, text centered, rounded corners, minimum height=1.5cm, font=\small},
+    gateway/.style={rectangle, draw=orange!80, thick, fill=orange!10, text width=2.8cm, text centered, rounded corners, minimum height=1.5cm, font=\small},
+    line/.style={draw, thick, -latex', shorten >=2pt}
+]
+
+% Nodes
+\node[box] (iot) {Nodo ESP32 \\ (Sensores / Actuadores)};
+\node[broker, right=of iot] (mqtt) {Broker MQTT \\ (Mosquitto)};
+\node[box, above=of mqtt] (ia) {Servicio de IA \\ (Python/Vision)};
+
+\node[box, right=of mqtt] (monitor) {Monitoring Service \\ (Spring Boot)};
+\node[box, above=of monitor] (auth) {Auth Service \\ (Spring Boot)};
+\node[box, below=of monitor] (notif) {Notification Svc \\ (Spring Boot)};
+
+\node[db, right=of monitor] (db) {PostgreSQL \\ (Base de Datos)};
+\node[gateway, right=of auth] (nginx) {API Gateway \\ (Nginx Reverse Proxy)};
+\node[box, above=of nginx] (frontend) {Frontend Web App \\ (React + Vite)};
+
+
+% Backgrounds
+\begin{scope}[on background layer]
+    \node[fill=gray!10, rounded corners, fit=(iot)] (hw) {};
+    \node[fill=gray!10, rounded corners, fit=(auth)(monitor)(notif)(db)] (backend) {};
+\end{scope}
+
+% Lines
+\path [line, <->] (iot) -- node[above, font=\scriptsize] {Pub/Sub} (mqtt);
+\path [line, ->] (ia) -- node[right, font=\scriptsize] {Eventos JSON} (mqtt);
+\path [line, <->] (mqtt) -- node[above, font=\scriptsize] {Integración} (monitor);
+\path [line, ->] (mqtt) -- (notif);
+
+\path [line, <->] (monitor) -- (db);
+\path [line, <->] (auth) -- (db);
+
+\path [line, <->] (nginx) -- (auth);
+\path [line, <->] (nginx) -- (monitor);
+\path [line, <->] (frontend) -- node[right, font=\scriptsize] {HTTP/REST \& WS} (nginx);
+
+\end{tikzpicture}
+\end{center}
+\vspace{0.5cm}
+
+Esta arquitectura se despliega de manera unificada empleando contenedores \textbf{Docker}. A través de Docker Compose, el entorno orquesta el Gateway (Nginx), los servicios backend en Java, la base de datos PostgreSQL, el broker Mosquitto, y la aplicación Frontend, asegurando portabilidad absoluta desde el entorno local de desarrollo hasta servidores en la nube de producción (AWS, Google Cloud).
+
+\section{Tecnologías Propuestas}
+El conjunto de tecnologías elegido representa un \textit{Stack Enterprise}, combinando rendimiento, mantenibilidad y seguridad:
+\begin{itemize}
+    \item \textbf{Frontend:} \texttt{React.js} con \texttt{TypeScript}, compilado mediante \texttt{Vite} para máxima velocidad. Estilizado con \texttt{Tailwind CSS} para un diseño inmersivo y \texttt{Lucide React} para iconografía. Las conexiones en tiempo real se manejan vía \texttt{SockJS} y \texttt{STOMP}.
+    \item \textbf{Backend Core:} Desarrollado en \texttt{Java 17} con \texttt{Spring Boot 3}. Se utilizan dependencias como \texttt{Spring Security} con JWT para la seguridad, \texttt{Spring Data JPA} para el mapeo ORM, y \texttt{Spring Integration MQTT} para conectarse al mundo IoT.
+    \item \textbf{Microservicio de IA:} \texttt{Python 3} como lenguaje anfitrión, aprovechando librerías especializadas en visión por computadora e integrándose al broker MQTT mediante \texttt{paho-mqtt}.
+    \item \textbf{Almacenamiento:} \texttt{PostgreSQL 15}. Base de datos relacional de nivel empresarial, garantizando cumplimiento ACID para historiales de multas y cuentas de usuario.
+    \item \textbf{Infraestructura y Redes:} \texttt{Eclipse Mosquitto} (Broker MQTT) y \texttt{Nginx} (API Gateway y servidor estático del frontend). Orquestado completamente con \texttt{Docker}.
+\end{itemize}
+
+\section{Viabilidad del Proyecto y Alcance}
+
+\subsection{Alcance del Proyecto (MVP)}
+El alcance de la primera versión funcional del proyecto abarca el desarrollo completo de la plataforma en la nube (Dashboard Web), la puesta en marcha de los microservicios, y la comunicación en tiempo real. 
+
+Se garantiza:
+\begin{enumerate}
+    \item Autenticación segura y control de roles (Admin, Recepción, Seguridad, Residente).
+    \item Flujo completo de Infracciones: desde que se detecta (estado Pendiente), se multa (Fined), hasta que Recepción la cobra y cierra (Resuelta).
+    \item Simulación robusta e integración de eventos IoT de hardware hacia la base de datos.
+    \item Arquitectura Dockerizada y desplegada en la nube pública (AWS).
+\end{enumerate}
+
+\subsection{Viabilidad Técnica}
+El proyecto es altamente viable y realista de implementar con los recursos y tiempo disponibles por las siguientes razones fundamentales:
+\begin{itemize}
+    \item \textbf{Costo Cero en Licenciamiento:} Toda la infraestructura de software se sostiene en herramientas Open Source maduras y libres de pago de licencias.
+    \item \textbf{Disponibilidad de Hardware:} El ESP32 es un microcontrolador extremadamente económico (aprox. \$5 USD) y con disponibilidad masiva en el mercado local. Los sensores complementarios son de fácil acceso.
+    \item \textbf{Despliegue Continuo (CI/CD) Simplificado:} Al haber encapsulado toda la solución en contenedores Docker, la fricción de "funciona en mi máquina pero no en producción" desaparece por completo, agilizando los tiempos de entrega.
+    \item \textbf{Riesgos Identificados y Mitigados:} Se ha considerado el riesgo de intermitencia de red. Para ello, los servicios están configurados para reconectarse al Broker MQTT y a la Base de Datos automáticamente mediante políticas de tolerancia a fallos internas de Spring Boot.
+\end{itemize}
+
+\section{Impacto Esperado}
+La implementación de la plataforma generará externalidades profundamente positivas en los complejos habitacionales donde se instale:
+
+\begin{itemize}
+    \item \textbf{Impacto en la Seguridad y Prevención del Delito:} Reduce drásticamente la tasa de incidencias al actuar como un elemento disuasorio activo. La sola presencia de luces y sonido automáticos al perímetro evita que un intruso complete su acción, protegiendo bienes y vidas.
+    \item \textbf{Impacto Empresarial y Productividad:} Moderniza por completo la administración del edificio. Los conserjes y guardias dejan de realizar vigilancia pasiva, reduciendo la fatiga. La administración optimiza su presupuesto de seguridad (haciendo más eficiente al personal actual en lugar de contratar más turnos ciegos).
+    \item \textbf{Impacto Social y Convivencia:} Mejora la convivencia interna al automatizar el cobro y notificación de multas menores (como ruidos molestos o mascotas mal ubicadas). El sistema elimina la fricción personal entre vecinos o guardias al ser la IA y los sensores los árbitros imparciales de las reglas del condominio. Aumenta la confianza y la calidad de vida comunitaria exponencialmente.
+\end{itemize}
+
+\section{Conclusiones}
+El \textit{Condominio Smart System} demuestra cómo la convergencia de la Inteligencia Artificial, el IoT de bajo costo y las arquitecturas web modernas pueden transformar por completo modelos de negocio tradicionales como la seguridad residencial. Este documento especifica las bases sólidas sobre las cuales la solución ha sido construida y será escalada hacia el futuro.
+
+\vspace{1cm}
+\begin{thebibliography}{9}
+\bibitem{mqtt}
+OASIS Standard, \textit{MQTT Version 5.0}, 2019. [Online]. Disponible en: mqtt.org
+
+\bibitem{springboot}
+Spring Framework Documentation, \textit{Spring Boot Reference Guide}, 2023.
+
+\bibitem{yolo}
+Redmon, J., et al., \textit{You Only Look Once: Unified, Real-Time Object Detection}, IEEE CVPR, 2016.
+\end{thebibliography}
+
+\end{document}
