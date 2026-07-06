@@ -71,4 +71,12 @@ public class AuthController {
         service.adminChangeRole(id, request.getNewRole());
         return ResponseEntity.ok().build();
     }
+
+    @org.springframework.web.bind.annotation.DeleteMapping("/admin/users/{id}")
+    public ResponseEntity<Void> adminDeleteUser(
+            @PathVariable Long id
+    ) {
+        service.adminDeleteUser(id);
+        return ResponseEntity.ok().build();
+    }
 }

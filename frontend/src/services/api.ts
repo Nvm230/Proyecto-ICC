@@ -18,6 +18,7 @@ export const createUser = (data: any) => api.post('/auth/register', data).then(r
 export const changePassword = (data: any) => api.put('/auth/change-password', data).then(res => res.data);
 export const adminChangePassword = (id: number, data: any) => api.put(`/auth/admin/users/${id}/password`, data).then(res => res.data);
 export const adminChangeRole = (id: number, data: any) => api.put(`/auth/admin/users/${id}/role`, data).then(res => res.data);
+export const adminDeleteUser = (id: number) => api.delete(`/auth/admin/users/${id}`).then(res => res.data);
 
 export const getUserViolations = (username: string) => api.get(`/monitor/violations/user/${username}`).then(res => res.data);
 export const createViolation = (data: any) => api.post('/monitor/violations', data).then(res => res.data);

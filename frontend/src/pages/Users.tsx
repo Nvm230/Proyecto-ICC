@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getUsers, createUser, adminChangeRole, adminChangePassword } from '../services/api';
-import { Users as UsersIcon, Plus, Key, Shield, X } from 'lucide-react';
+import { getUsers, createUser, adminChangeRole, adminChangePassword, adminDeleteUser } from '../services/api';
+import { Users as UsersIcon, Plus, Key, Shield, X, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Pagination } from '../components/Pagination';
 import { useAuthStore } from '../store/useAuthStore';
@@ -94,6 +94,21 @@ export const Users = () => {
     }
   };
 
+  const handleDeleteUser = async (user: User) => {
+    if (user.role === 'ADMIN') {
+      toast.error('No se puede eliminar a un administrador');
+      return;
+    }
+    if (!window.confirm(`¿Estás seguro de que deseas eliminar al usuario ${user.username}?`)) return;
+    try {
+      await adminDeleteUser(user.id);
+      toast.success('Usuario eliminado exitosamente');
+      fetchUsers();
+    } catch (error) {
+      toast.error('Error al eliminar usuario');
+    }
+  };
+
   const isAdmin = currentUserRole === 'ADMIN';
 
   return (
@@ -169,6 +184,15 @@ export const Users = () => {
                         >
                           <Key className="w-4 h-4" />
                         </button>
+                        {user.role !== 'ADMIN' && (
+                          <button 
+                            onClick={() => handleDeleteUser(user)}
+                            title="Eliminar Usuario"
+                            className="p-2 hover:bg-red-500/20 rounded-lg text-red-400 hover:text-red-300 transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
                       </td>
                     )}
                   </tr>

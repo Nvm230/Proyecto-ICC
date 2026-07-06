@@ -87,4 +87,12 @@ public class AuthService {
         user.setRole(Role.valueOf(newRole));
         repository.save(user);
     }
+
+    public void adminDeleteUser(Long userId) {
+        var user = repository.findById(userId).orElseThrow();
+        if (user.getRole() == Role.ADMIN) {
+            throw new IllegalArgumentException("No se puede eliminar a un administrador");
+        }
+        repository.delete(user);
+    }
 }
